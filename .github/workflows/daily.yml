@@ -1,0 +1,28 @@
+name: Daily Commit
+
+on:
+  schedule:
+    - cron: "0 22 * * *"  # tous les jours à 01h00 Madagascar (22h UTC)
+  workflow_dispatch:       # permet de lancer manuellement
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Make a change
+        run: |
+          echo "Last run: $(date)" > daily.md
+
+      - name: Commit changes
+        run: |
+          git add daily.md
+          git commit -m "chore: daily commit" || echo "No changes"
+          git push
